@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+         #ui{
+            display: flex;
+            grid-template-columns: repeat(3, 1fr);
+            margin: 0 auto;
+            justify-content: center;
+        }
+        #ui div{
+            padding: 20px;
+            /* border: 1px solid black; */
+            box-shadow: 0px 0px 15px;
+            border-radius: 11px;
+            margin: 10px;
+        }
+        img{
+            height: 250px;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include("nav")%>
+        <h2 style="font-size: 20px;margin: 10px 20px; ">Your Products :</h2>
+        <div id="ui">
+
+        </div>
+</body>
+
+<script>
+    const display=(data)=>{
+        data.map((ele)=>{
+            let img = document.createElement("img");
+            img.src= ele.img
+            let title = document.createElement("h4"); 
+            title.innerHTML= ele.title
+            let des = document.createElement("h5"); 
+            des.innerHTML= ele.des
+            let price = document.createElement("h5"); 
+            price.innerHTML= ele.price
+            let btn1 = document.createElement("button");
+            btn1.innerHTML= "Add to cart"
+            btn1.addEventListener("click", ()=>cart (ele._id))
+
+            const cart = (id)=>{
+                fetch(`/product/cart/${id}`,{
+                    
+                })
+            }
+            let div = document.createElement("div")
+            div.append(img , title , des , price,btn1)
+
+            document.getElementById("ui").append(div)
+        })
+    }
+    fetch("/product/products")
+    .then((response) => response.json())
+        .then((response) => {
+            products = response;
+            display(products);
+        });
+</script>
+
+</html>
