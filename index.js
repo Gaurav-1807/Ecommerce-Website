@@ -8,6 +8,12 @@ const { auth } = require('./middleware/auth');
 const app = express();
 app.use(express.json())
 app.use(cookie())
+app.use('/images', express.static(__dirname + '/images'));
+app.get('/images/:name',(req,res) => {
+    // res.sendFile(__dirname+"/images")
+    let {name} = req.params
+    res.sendFile(__dirname + `/images/ + ${name}`)
+})
 app.use(express.urlencoded({ extended: true }))
 app.set("view engine", "ejs");
 app.set("views",__dirname + '/views');

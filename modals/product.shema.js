@@ -5,7 +5,7 @@ const products = new mongoose.Schema({
     des : String,
     price : Number,
     img : String,
-    UserId : String,
+    UserId : {type : mongoose.Schema.Types.ObjectId,ref :"modals"}
 })
 
 const ProductSchema = mongoose.model('Products', products)

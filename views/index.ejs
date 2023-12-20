@@ -6,21 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-         #ui{
+        #ui {
             display: flex;
             grid-template-columns: repeat(3, 1fr);
             margin: 0 auto;
             justify-content: center;
         }
-        #ui div{
+
+        #ui div {
             padding: 20px;
             /* border: 1px solid black; */
             box-shadow: 0px 0px 15px;
             border-radius: 11px;
             margin: 10px;
         }
-        img{
+
+        img {
             height: 250px;
+            width: 250px;
         }
     </style>
 </head>
@@ -34,33 +37,39 @@
 </body>
 
 <script>
-    const display=(data)=>{
-        data.map((ele)=>{
+    const display = (data) => {
+        document.getElementById("ui").innerHTML = " "
+        data.map((ele) => {
             let img = document.createElement("img");
-            img.src= ele.img
-            let title = document.createElement("h4"); 
-            title.innerHTML= ele.title
-            let des = document.createElement("h5"); 
-            des.innerHTML= ele.des
-            let price = document.createElement("h5"); 
-            price.innerHTML= ele.price
+            img.src = ele.img
+            let title = document.createElement("h4");
+            title.innerHTML = ele.title
+            let des = document.createElement("h5");
+            des.innerHTML = ele.des
+            let price = document.createElement("h5");
+            price.innerHTML = ele.price
             let btn1 = document.createElement("button");
-            btn1.innerHTML= "Add to cart"
-            btn1.addEventListener("click", ()=>cart (ele._id))
+            btn1.innerHTML = "Add to cart"
+            btn1.addEventListener("click", () => cart(ele._id))
 
-            const cart = (id)=>{
-                fetch(`/product/cart/${id}`,{
-                    
+            const cart = (id) => {
+                console.log(id)
+                fetch(`/product/cart/${id}`, {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({ productID: id })
                 })
+                    .then((response) => response.json())
+                    .then((data) => console.log(data))
             }
             let div = document.createElement("div")
-            div.append(img , title , des , price,btn1)
+            div.append(img, title, des, price, btn1)
 
             document.getElementById("ui").append(div)
         })
     }
     fetch("/product/products")
-    .then((response) => response.json())
+        .then((response) => response.json())
         .then((response) => {
             products = response;
             display(products);

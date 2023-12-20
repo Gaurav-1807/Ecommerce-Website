@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .maindiv {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 10px;
+            border: 1px solid black;
+        }
+
+        img {
+            height: 150px;
+            width: 150px;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid black;
+        }
+
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+        }
+
+        span {
+            font-size: 14px;
+        }
+
+        button {
+            padding: 5px;
+            font-size: 12px;
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include("nav")%>
+        <div class="container">
+            <h1>Your cart :</h1>
+            <div id="ui"></div>
+        </div>
+</body>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    const handleqty = (id, val) => {
+        fetch(`/product/cart/update/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ val: val })
+        })
+            .then(response => response.json())
+            .then(response => window.location.reload())
+            .catch(error => console.log(error))
+    }
+
+
+    let Tprice = 0
+    const display = (data) => {
+        document.getElementById("ui").innerHTML = " "
+        data.map((element) => {
+            let ele = element.productID
+            Tprice = Number(Tprice) + Number(ele.price) * element.qty
+            let img = document.createElement("img");
+            img.src = ele.img
+            let title = document.createElement("h2");
+            title.innerHTML = `Title : ${ele.title}`
+
+            let price = document.createElement("h3");
+            price.innerHTML = `Price : ${ele.price}`
+
+            let qty = document.createElement("span");
+            qty.innerHTML = `Qty : ${element.qty}`
+
+            let btn1 = document.createElement("button");
+            btn1.innerHTML = "-"
+            btn1.addEventListener("click", () => handleqty(element._id, -1))
+            let btn2 = document.createElement("button");
+            btn2.innerHTML = "+"
+            btn2.addEventListener("click", () => handleqty(element._id, 1))
+            let div1 = document.createElement("div");
+            div1.append(img)
+            let div = document.createElement("div")
+            div.append(title, price, btn1, qty, btn2)
+            let div2 = document.createElement("div")
+            div2.append(div1, div)
+            div2.setAttribute("class", "maindiv")
+            document.getElementById("ui").append(div2)
+
+
+        })
+        let pricebtn = document.createElement("button");
+        pricebtn.innerHTML = `Total price : ${Tprice}`
+        document.getElementById("ui").append(pricebtn)
+
+        let chechout = document.createElement("button");
+        chechout.innerHTML = "chechout"
+        document.getElementById("ui").append(chechout)
+        chechout.addEventListener("click",() =>handlepayment(Tprice))
+
+    }
+    const handlepayment = async(amount) => {
+        let res = await fetch("/product/payment",{
+            method: "POST",
+            headers: {"content-type": "application/json"},
+            body : JSON.stringify({amount : amount})
+        })
+        let order = await res.json()
+        let options = {
+            key :"rzp_test_ZwsKvw5bh9rweM",
+            amount : order.amount
+        }
+        let rpay = new Razorpay(options)
+        rpay.open()
+    }
+    fetch("/product/cartdata")
+        .then((response) => response.json())
+        .then((response) => {
+            products = response;
+            display(products);
+        });
+</script>
+
+</html>

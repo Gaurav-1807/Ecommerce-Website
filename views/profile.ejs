@@ -1,58 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-         #ui{
+        #ui {
+            width: 80%;
             display: flex;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             margin: 0 auto;
             justify-content: center;
+            border: 1px solid black;
         }
-        #ui div{
+
+        #ui div {
+
             padding: 20px;
             /* border: 1px solid black; */
             box-shadow: 0px 0px 15px;
             border-radius: 11px;
             margin: 10px;
         }
-        img{
+
+        .profile-div {
+            padding: 10px;
+            /* width: 20%; */
+            border: 1px double black;
+        }
+
+        img {
             height: 250px;
+            width: 250px;
+        }
+
+        button {
+            margin-top: 10px;
+            margin-right: 10px;
+            padding: 5px;
+        }
+
+        .d-flex {
+            display: flex;
+            flex-wrap: wrap;
+
+        }
+
+        .profile-img {
+            /* width: 100px;
+            height: 100px; */
+            /* line-height: 50px; */
+            border: 1px solid black;
+            text-align: center;
+            margin: 25px;
+        }
+
+        .profile-img i {
+            line-height: 100px;
+            font-size: 50px;
+        }
+
+        #user h1 {
+            font-size: 18px;
+            text-align: center;
+        }
+
+        #user h2 {
+            font-size: 14px;
+            margin: 10px 0px;
+            text-align: center;
+        }
+
+        .img {
+            height: 150px;
+            width: 150px;
+            margin: 0 auto;
+            text-align: center;
+            /* width: 100%; */
         }
     </style>
 </head>
+
 <body>
     <%- include("nav")%>
-    <div id="ui">
+        <div class="d-flex">
+            <!-- <div class="profile-div">
+                <div class="profile-img">
 
-    </div>
+                </div>
+                <div id="user">
+
+                </div>
+            </div> -->
+            <div id="user">
+
+            </div>
+            <div id="ui">
+
+            </div>
+        </div>
 </body>
+<script src="https://kit.fontawesome.com/b9bf39324e.js" crossorigin="anonymous"></script>
 <script>
-    const display=(data)=>{
-        data.map((ele)=>{
+    const display = (data) => {
+        document.getElementById("ui").innerHTML = " "
+        data.map((ele) => {
+            console.log(ele.img);
             let img = document.createElement("img");
-            img.src= ele.img
-            let title = document.createElement("h4"); 
-            title.innerHTML= ele.title
-            let des = document.createElement("h5"); 
-            des.innerHTML= ele.des
-            let price = document.createElement("h5"); 
-            price.innerHTML= ele.price
+            img.src = ele.img
+
+            let title = document.createElement("h4");
+            title.innerHTML = `title :${ele.title}`
+            let des = document.createElement("h5");
+            des.innerHTML = `des : ${ele.des}`
+            let price = document.createElement("h5");
+            price.innerHTML = `price : ${ele.price}`
             let btn1 = document.createElement("button");
-            btn1.innerHTML= "Add to cart"
+            btn1.innerHTML = "Add to cart"
+            let btn2 = document.createElement("button");
+            btn2.innerHTML = "Delete"
+            btn2.addEventListener("click", () => dproduct(ele._id))
+            const dproduct = (id) => {
+                fetch(`/product/delete/${id}`, {
+                    method: "DELETE",
+
+                })
+
+            }
+            console.log(img, "product");
+
             let div = document.createElement("div")
-            div.append(img , title , des , price,btn1)
+            div.append(img, title, des, price, btn1, btn2)
 
             document.getElementById("ui").append(div)
         })
     }
     fetch("/product/userproducts")
-    .then((response) => response.json())
+        .then((response) => response.json())
         .then((response) => {
             products = response;
             display(products);
         });
 </script>
+<script>
+    const ui = (data) => {
+        console.log(data);
+        document.getElementById("user").innerHTML = " "
+        let img = document.createElement("img")
+        img.src = `/images/${data.img}`
+        img.setAttribute("class", "img")
+        let imgdiv = document.createElement("div");
+        imgdiv.append(img)
+        imgdiv.setAttribute("class", "profile-img")
+        let maindiv = document.createElement("div");
+       
+        maindiv.setAttribute("class", "profile-div")
+        // console.log(img);
+        let username = document.createElement("h1")
+        username.innerHTML = `Username : ${data.username}`
+        let email = document.createElement("h2")
+        email.innerHTML = `Email : ${data.email}`
+
+        let div = document.createElement("div")
+        maindiv.append(imgdiv , username , email)
+        div.append(maindiv)
+        document.getElementById("user").append(div)
+
+    }
+    fetch("/user/profiledata")
+        .then((response) => response.json())
+        .then((response) => {
+            products = response;
+            ui(products);
+        })
+        .catch((error) => console.log(error))
+</script>
+
 </html>

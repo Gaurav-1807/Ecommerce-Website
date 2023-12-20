@@ -122,7 +122,7 @@
     <%- include("nav") %>
         <div class="signupSection">
 
-            <form action="/user/signup" method="POST" class="signupForm">
+            <form action="/user/signup" method="POST" class="signupForm" enctype="multipart/form-data" >
                 <h2>Sign Up</h2>
                 <ul class="noBullet">
                     <li>
@@ -140,6 +140,10 @@
                         <input type="password" class="inputFields" id="password" name="password" placeholder="Password"
                             value="" required />
                         <p id="p_err"></p>
+                    </li>
+                    <li>
+                        <label for="email"></label>
+                        <input type="file" placeholder="choes youre image" name="img">
                     </li>
                     <li id="center-btn">
                         <input type="submit" id="join-btn" name="join" alt="Join" value="Sign Up">
