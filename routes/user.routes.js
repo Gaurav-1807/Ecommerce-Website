@@ -1,5 +1,5 @@
 const { Router } = require("express")
-const { signpage, signup, loginpage, login, profilepage, forgetform_page, reset, verify, profiledata } = require("../controllars/user.logic")
+const { signpage, signup, loginpage, login, profilepage, forgetform_page, reset, verify, profiledata, newpass } = require("../controllars/user.logic")
 const { auth } = require("../middleware/auth")
 const multer = require("multer")
 const router = Router()
@@ -25,5 +25,6 @@ router.post("/sendmail", reset)
 router.get("/verify/:otp", verify)
 // router.get("/profile/user", auth, profiledata)
 router.get("/profiledata", profiledata)
-
+// router.get("/newpasspage",newpasspage)
+router.post("/newpass",newpass)
 module.exports = { router }

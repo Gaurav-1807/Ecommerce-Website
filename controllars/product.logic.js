@@ -86,6 +86,7 @@ const payment = (req, res) => {
         }
         else{
             res.send(order)
+            
         }
     })
 }
